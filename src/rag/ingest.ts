@@ -11,16 +11,16 @@ const indexMovieData = async () => {
   const spinner = ora('Reading movie data...').start()
   const moviesPath = path.join(process.cwd(), 'src/rag/imdb_movie_dataset.csv')
 
-  const csvData = fs.readFileSync(moviesPath, 'utf-8')
+  const csvData = fs.readFileSync(moviesPath, 'utf8')
   const records = parse(csvData, {
     columns: true,
     skip_empty_lines: true,
   })
 
-  spinner.text = 'Starting movie indexing...'
+  spinner.text = 'Indexing movie data...'
 
   for (const record of records) {
-    spinner.text = `Indexing movie ${record.Title}...`
+    spinner.text = `Indexing ${record.Title}...`
 
     const text = `${record.Title}. ${record.Genre}. ${record.Description}.`
 
@@ -40,13 +40,13 @@ const indexMovieData = async () => {
           metascore: Number(record.Metascore),
         },
       })
-    } catch (e) {
-      spinner.fail(`Error indexing movie ${record.Title}`)
-      console.error(e)
+    } catch (error) {
+      spinner.fail(`Failed to index ${record.Title}`)
+      console.error(error)
     }
   }
 
-  spinner.succeed('All movies indexed!')
+  spinner.succeed('Movie data indexed')
 }
 
 indexMovieData()
